@@ -6,15 +6,15 @@ from rpg_music.users.models import UserAuth, User, AuthProviders
 
 class BaseUserAuthRepository(ABC):
     @abstractmethod
-    def save_user_auth(self, user_id: int, user_auth: UserAuth) -> UserAuth:
+    async def save_user_auth(self, user_id: int, user_auth: UserAuth) -> UserAuth:
         pass
 
     @abstractmethod
-    def get_auth_for_user(self, user_id: int) -> List[UserAuth]:
+    async def get_auth_for_user(self, user_id: int) -> List[UserAuth]:
         pass
 
     @abstractmethod
-    def get_auth_for_user_and_provider(
-        self, user: User, provider: AuthProviders
-    ) -> Optional[AuthProviders]:
+    async def get_auth_for_user_and_provider(
+        self, user_id: int, provider: AuthProviders
+    ) -> Optional[UserAuth]:
         pass

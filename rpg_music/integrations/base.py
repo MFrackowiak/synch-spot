@@ -3,6 +3,8 @@ from typing import Optional
 
 from aiohttp import ClientSession
 
+from rpg_music.common.sessions import SessionManager
+
 
 class AsyncAPIClient:
     def __init__(self):
@@ -10,6 +12,7 @@ class AsyncAPIClient:
 
     async def init(self):
         self.session = ClientSession(json_serialize=ujson.dumps)
+        SessionManager().register_session(self.session)
 
     async def post(self, *args, **kwargs):
         if not self.session:

@@ -24,8 +24,16 @@ class SpotifyClientError(Exception):
     pass
 
 
+@dataclass
+class SpotifyDevice:
+    device_id: str
+    name: str
+    active: bool
+
+
 class SpotifyAPIClient(AsyncAPIClient):
     BASE = "https://accounts.spotify.com"
+    API = "https://api.spotify.com/v1"
 
     def __init__(self, client_id: str, client_secret: str):
         super().__init__()
@@ -90,3 +98,25 @@ class SpotifyAPIClient(AsyncAPIClient):
             **response_content,
             refresh_token=refresh_token,
         )
+
+    async def get_devices_list(self, user_token: str) -> List[SpotifyDevice]:
+        response = await self.session.get(
+            f"{self.API}/me/player/devices",
+            headers={"Authorization": f"Bearer {user_token}"},
+        )
+
+        return [
+            SpotifyDevice(
+                device_id=device["id"], active=device["is_active"], name=device["name"]
+            )
+            for device in response.json()["devices"]
+        ]
+
+    async def get_track_info(self, track_id: str) -> Dict:
+        pass
+
+    async def play_track(self, user_token: str, track_id: str):
+        pass
+
+    async def queue_track(self, user_token: str, *tracks):
+        pass

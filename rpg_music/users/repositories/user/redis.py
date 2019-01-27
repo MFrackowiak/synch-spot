@@ -29,7 +29,7 @@ class RedisUserRepository(RedisBase, BaseUserRepository):
         return User(**json.loads(user_raw_data))
 
     async def get_user_by_username(self, username: str) -> Optional[User]:
-        user_id = self.redis.hget(self.user_name_hash, username)
-        if not user_id:
+        user_id_bytes = await self.redis.hget(self.user_name_hash, username)
+        if not user_id_bytes:
             return None
-        return await self.get_user_by_id(user_id)
+        return await self.get_user_by_id(user_id_bytes.decode("utf-8"))
